@@ -12,7 +12,7 @@ province = []
 datetime = []
 wind_list = []
 temp_list = []
-loc = '100.536443,13.729984'
+loc = '100.536,13.730'
 loc_name = 'BKK'
 
 service = ChromeService(executable_path=ChromeDriverManager().install())
@@ -25,11 +25,11 @@ chrome_prefs["profile.managed_default_content_settings"] = {"images":2}
 
 driver = webdriver.Chrome(service = service,options = option)
 
-counter = (31+31+30+31+30+32)*8
 
-url = 'https://earth.nullschool.net/#2020/06/30/1500Z/wind/surface/level/overlay=temp/orthographic=-266.70,-1.65,436/loc=' + loc
+url = 'https://earth.nullschool.net/#2020/06/30/1500Z/wind/surface/level/overlay=temp/orthographic=-266.70,-1.65,436/loc=' + loc #2020scrap ตั้งแต่ 30/6 22.00 Local ถึง 1/1/2021 7.00Local
+endurl = 'https://earth.nullschool.net/#2021/01/1/0100Z/wind/surface/level/overlay=temp/orthographic=-266.70,-1.65,436/loc=' + loc
 
-while(counter>=0):
+while(True):
         driver.get(url = url)
 
         #wait all data
@@ -37,41 +37,44 @@ while(counter>=0):
         date = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[2]/div[3]').get_attribute("innerText")
         wind = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[2]/div').text
         temp = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[3]/div').text
-        counter-=1
 
         forward = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[5]/div[3]/div[1]/div/button[3]')      
             
         driver.execute_script("arguments[0].click();", forward)
         
-            
+        
         print(loc_name,date,wind,temp)
         province.append(loc_name)
         wind_list.append(wind)
         temp_list.append(temp)
         datetime.append(date)
-        url = driver.current_url
 
-counter = (31+28+31+30+30+32)*24
+        url = driver.current_url        
+        if(url == endurl): break
 
-url = 'https://earth.nullschool.net/#2021/01/01/0000Z/wind/surface/level/overlay=temp/orthographic=-255.00,0.00,661/loc=' + loc
-while(counter>=0):        
-            driver.get(url = url)
 
-            WebDriverWait(driver,100).until(lambda x: x.find_element(By.XPATH,'/html/body/main/div[3]/div[4]/div/div[2]/div[3]').get_attribute("innerText")!= "N/A")
-            date = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[2]/div[3]').get_attribute("innerText")
-            wind = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[2]/div').text
-            temp = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[3]/div').text
-            counter-=1
+url = 'https://earth.nullschool.net/#2021/01/01/0100Z/wind/surface/level/overlay=temp/orthographic=-255.00,0.00,661/loc=' + loc #2021scrap ตั้งแต่ 1/1 08.00 ถึง 1/7/2021 23.00
+endurl = 'https://earth.nullschool.net/#2021/07/02/0000Z/wind/surface/level/overlay=temp/orthographic=-255.00,0.00,661/loc=' + loc
+while(True):        
+        driver.get(url = url)
 
-            forward = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[5]/div[3]/div[1]/div/button[3]')    
-            driver.execute_script("arguments[0].click();", forward)         
-            url = driver.current_url 
+        WebDriverWait(driver,100).until(lambda x: x.find_element(By.XPATH,'/html/body/main/div[3]/div[4]/div/div[2]/div[3]').get_attribute("innerText")!= "N/A")
+        date = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[2]/div[3]').get_attribute("innerText")
+        wind = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[2]/div').text
+        temp = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[2]/div[3]/div').text
+
+        forward = driver.find_element(By.XPATH, '/html/body/main/div[3]/div[4]/div/div[5]/div[3]/div[1]/div/button[3]')    
+        driver.execute_script("arguments[0].click();", forward)         
          
-            print(loc_name,date,wind,temp)
-            province.append(loc_name)
-            wind_list.append(wind)
-            temp_list.append(temp)
-            datetime.append(date)
+        print(loc_name,date,wind,temp)
+        province.append(loc_name)
+        wind_list.append(wind)
+        temp_list.append(temp)
+        datetime.append(date)
+
+        url = driver.current_url        
+        if(url == endurl): break
+            
     
     
 d = {'Province': province, 'DateTime': datetime, 'Wind' : wind_list , 'Temp' :temp_list}
