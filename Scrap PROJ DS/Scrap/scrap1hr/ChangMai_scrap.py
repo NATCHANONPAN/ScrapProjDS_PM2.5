@@ -27,7 +27,7 @@ driver = webdriver.Chrome(service = service,options = option)
 
 counter = (31+31+30+31+30+32)*8
 
-url = 'https://earth.nullschool.net/#2020/06/30/1800Z/wind/surface/level/overlay=temp/orthographic=-266.70,-1.65,436/loc=' + loc
+url = 'https://earth.nullschool.net/#2020/06/30/1500Z/wind/surface/level/overlay=temp/orthographic=-266.70,-1.65,436/loc=' + loc
 
 while(counter>=0):
         driver.get(url = url)
@@ -76,4 +76,4 @@ while(counter>=0):
     
 d = {'Province': province, 'DateTime': datetime, 'Wind' : wind_list , 'Temp' :temp_list}
 wind_temp = pd.DataFrame(data = d)
-wind_temp.to_csv('ChangMai_every1.csv',index=False)
+wind_temp.to_csv('wt_changmai.csv',index=False)
